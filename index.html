@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SearchHub - 多平台搜索工具</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      color: #1a73e8;
+      font-size: 3em;
+      margin: 0;
+      font-weight: 500;
+    }
+    .subtitle {
+      color: #5f6368;
+      font-size: 1.2em;
+      margin: 10px 0 0;
+      font-weight: 300;
+    }
+    .search-container {
+      display: flex;
+      margin-bottom: 40px;
+      max-width: 600px;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #searchInput {
+      flex-grow: 1;
+      padding: 15px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 24px 0 0 24px;
+      outline: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: box-shadow 0.3s ease;
+    }
+    #searchInput:focus {
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    #searchButton {
+      padding: 15px 30px;
+      font-size: 1em;
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 0 24px 24px 0;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    #searchButton:hover {
+      background-color: #1565c0;
+    }
+    .search-options {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      margin-bottom: 20px;
+    }
+    .tool-category {
+      margin-bottom: 30px;
+    }
+    .tool-category h3 {
+      font-size: 1.2em;
+      color: #1a73e8;
+      margin-bottom: 15px;
+      font-weight: 500;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 10px;
+    }
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      color: #3c4043;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    .checkbox-group label:hover {
+      color: #1a73e8;
+    }
+    input[type="checkbox"] {
+      margin-right: 8px;
+    }
+    .instructions-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #34a853;
+      color: white;
+      border: none;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .instructions-button:hover {
+      background-color: #2d9144;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 8px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .seo-content {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      margin-top: 40px;
+    }
+    .seo-content h2 {
+      color: #1a73e8;
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 768px) {
+      .checkbox-group {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>SearchHub</h1>
+    <p class="subtitle">一键触发，多端搜索</p>
+  </header>
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="输入搜索内容">
+    <button id="searchButton">搜索</button>
+  </div>
+  <div class="search-options">
+    <div class="tool-category">
+      <h3>AI搜索</h3>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="search" value="https://www.perplexity.ai/"> Perplexity</label>
+        <label><input type="checkbox" name="search" value="https://360.ai/"> 360AI搜索</label>
+        <label><input type="checkbox" name="search" value="https://www.baidu.com/"> 百小应</label>
+        <label><input type="checkbox" name="search" value="https://chat.sensetime.com/"> 智谱清言</label>
+        <label><input type="checkbox" name="search" value="https://www.doubao.com/"> 豆包</label>
+        <label><input type="checkbox" name="search" value="https://www.thinkany.com/"> ThinkAny</label>
+        <label><input type="checkbox" name="search" value="https://www.webpilot.ai/"> WebPilot</label>
+        <label><input type="checkbox" name="search" value="https://devv.ai/"> Devv</label>
+        <label><input type="checkbox" name="search" value="https://www.kaiapai.cn/"> 开搜AI</label>
+        <label><input type="checkbox" name="search" value="https://consensus.app/"> Consensus</label>
+        <label><input type="checkbox" name="search" value="https://you.com/"> YOU</label>
+        <label><input type="checkbox" name="search" value="https://www.semanticscholar.org/"> SEMANTIC SCHOLAR</label>
+        <label><input type="checkbox" name="search" value="https://www.genspark.ai/"> Genspark</label>
+        <label><input type="checkbox" name="search" value="https://kfind.ai/"> kFind</label>
+        <label><input type="checkbox" name="search" value="https://mergeek.com/"> MERGEEK</label>
+        <label><input type="checkbox" name="search" value="https://xanswer.net/"> Xanswer</label>
+        <label><input type="checkbox" name="search" value="https://www.exa.ai/"> exa</label>
+      </div>
+    </div>
+    <div class="tool-category">
+      <h3>AI聊天</h3>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="search" value="https://chat.openai.com/"> ChatGPT</label>
+        <label><input type="checkbox" name="search" value="https://yiyan.baidu.com/"> 文心一言</label>
+        <label><input type="checkbox" name="search" value="https://tongyi.aliyun.com/"> 通义千问</label>
+        <label><input type="checkbox" name="search" value="https://chatglm.cn/"> 智谱GLM</label>
+        <label><input type="checkbox" name="search" value="https://www.zhihu.com/"> 知乎AI</label>
+        <label><input type="checkbox" name="search" value="https://kimi.moonshot.cn/"> Kimi</label>
+        <label><input type="checkbox" name="search" value="https://miku.chatgpt.com/"> Miku</label>
+        <label><input type="checkbox" name="search" value="https://www.menfree.com/"> MenFree</label>
+        <label><input type="checkbox" name="search" value="https://www.monicaai.com/"> Monica</label>
+      </div>
+    </div>
+    <div class="tool-category">
+      <h3>网页搜索</h3>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="search" value="https://www.google.com/search?q="> Google</label>
+        <label><input type="checkbox" name="search" value="https://www.bing.com/search?q="> Bing</label>
+        <label><input type="checkbox" name="search" value="https://www.baidu.com/s?wd="> 百度</label>
+        <label><input type="checkbox" name="search" value="https://duckduckgo.com/?q="> DuckDuckGo</label>
+        <label><input type="checkbox" name="search" value="https://yandex.com/search/?text="> Yandex</label>
+        <label><input type="checkbox" name="search" value="https://www.sogou.com/web?query="> 搜狗</label>
+        <label><input type="checkbox" name="search" value="https://www.so.com/s?q="> 360搜索</label>
+        <label><input type="checkbox" name="search" value="https://search.yahoo.com/search?p="> Yahoo</label>
+      </div>
+    </div>
+    <div class="tool-category">
+      <h3>内容搜索</h3>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="search" value="https://www.xiaohongshu.com/search_result?keyword="> 小红书</label>
+        <label><input type="checkbox" name="search" value="https://www.douyin.com/search/"> 抖音</label>
+        <label><input type="checkbox" name="search" value="https://twitter.com/search?q="> Twitter</label>
+        <label><input type="checkbox" name="search" value="https://www.youtube.com/results?search_query="> YouTube</label>
+        <label><input type="checkbox" name="search" value="https://v2ex.com/search?q="> V2EX</label>
+        <label><input type="checkbox" name="search" value="https://github.com/search?q="> Github</label>
+        <label><input type="checkbox" name="search" value="https://www.producthunt.com/search?q="> ProductHunt</label>
+        <label><input type="checkbox" name="search" value="https://www.facebook.com/search/top/?q="> Facebook</label>
+        <label><input type="checkbox" name="search" value="https://search.bilibili.com/all?keyword="> bilibili</label>
+        <label><input type="checkbox" name="search" value="https://www.zhihu.com/search?type=content&q="> 知乎</label>
+        <label><input type="checkbox" name="search" value="https://weixin.sogou.com/weixin?type=2&query="> 搜狗微信</label>
+        <label><input type="checkbox" name="search" value="https://s.weibo.com/weibo?q="> 微博</label>
+        <label><input type="checkbox" name="search" value="https://www.toutiao.com/search/?keyword="> 今日头条</label>
+      </div>
+    </div>
+  </div>
+  <button id="instructionsButton" class="instructions-button">使用说明</button>
+
+  <div class="seo-content">
+    <h2>SearchHub：您的多平台搜索助手</h2>
+    <!-- 在这里添加SEO文章内容 -->
+    <p>SearchHub是一款革命性的多平台搜索工具，旨在为用户提供最全面、最便捷的搜索体验。无论您是寻找AI驱动的智能搜索、实时的AI聊天互动、传统的网页搜索，还是特定平台的内容搜索，SearchHub都能满足您的需求。</p>
+    <p>我们的工具整合了市面上最前沿的AI搜索引擎，如Perplexity、360AI搜索等，让您轻松获取智能化的搜索结果。同时，我们也提供了对ChatGPT、文心一言等顶级AI聊天工具的快速访问，使您能够与AI进行深度对话和探讨。</p>
+    <p>对于传统搜索，我们集成了Google、Bing、百度等知名搜索引擎，确保您能获得最广泛的信息覆盖。此外，我们还特别关注了内容搜索领域，集成了小红书、抖音、Twitter等社交媒体平台的搜索功能，让您轻松找到感兴趣的话题和内容。</p>
+    <p>使用SearchHub，您可以一站式完成所有搜索需求，无需在多个网站和应用之间切换。我们的界面简洁直观，让您能够快速选择所需的搜索工具，并以最高效的方式获取信息。</p>
+    <p>SearchHub不仅仅是一个搜索工具，更是您探索数字世界的强大助手。无论您是学生、研究人员、专业人士还是普通网民，SearchHub都能为您提供精准、全面的搜索体验。让SearchHub成为您的首选搜索平台，开启智能搜索的新纪元！</p>
+  </div>
+</div>
+
+<div id="instructionsModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>使用说明</h2>
+    <p>1. 在搜索框中输入您要搜索的内容。</p>
+    <p>2. 选择您想要使用的搜索工具（可多选）。</p>
+    <p>3. 点击"搜索"按钮或按回车键。</p>
+    <p>4. 系统将在新标签页中打开所选的搜索工具，并自动填入您的搜索内容。</p>
+    <p>5. 如果遇到弹出窗口被阻止的情况，请允许浏览器显示弹出窗口。</p>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchButton = document.getElementById('searchButton');
+    const searchInput = document.getElementById('searchInput');
+    const instructionsButton = document.getElementById('instructionsButton');
+    const instructionsModal = document.getElementById('instructionsModal');
+    const closeButton = instructionsModal.querySelector('.close');
+
+    searchButton.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        performSearch();
+      }
+    });
+
+    instructionsButton.addEventListener('click', function() {
+      instructionsModal.style.display = 'block';
+    });
+
+    closeButton.addEventListener('click', function() {
+      instructionsModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(event) {
+      if (event.target == instructionsModal) {
+        instructionsModal.style.display = 'none';
+      }
+    });
+
+    async function checkUrl(url) {
+      try {
+        const response = await fetch(url, { method: 'HEAD', mode: 'no-cors' });
+        return true;
+      } catch (error) {
+        console.error('Error checking URL:', url, error);
+        return false;
+      }
+    }
+
+    async function performSearch() {
+      const query = encodeURIComponent(searchInput.value);
+      const checkboxes = document.querySelectorAll('input[name="search"]:checked');
+
+      let popupBlocked = false;
+
+      for (const checkbox of checkboxes) {
+        const baseUrl = checkbox.value;
+        const fullUrl = baseUrl.includes('?') ? `${baseUrl}${query}` : `${baseUrl}?q=${query}`;
+
+        const isUrlValid = await checkUrl(fullUrl);
+        if (isUrlValid) {
+          const newWindow = window.open(fullUrl, '_blank');
+          if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+            popupBlocked = true;
+            break;
+          }
+        } else {
+          alert(`无法访问 ${checkbox.nextSibling.textContent.trim()} 的URL。请检查网络连接或尝试其他搜索工具。`);
+        }
+      }
+
+      if (popupBlocked) {
+        showPopupBlockedMessage();
+      }
+    }
+
+    function showPopupBlockedMessage() {
+      const message = document.createElement('div');
+      message.innerHTML = `
+                    <div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 1000;">
+                        <p>弹出窗口被阻止。请允许弹出窗口以使用此功能。</p>
+                        <p>通常在地址栏右侧会出现弹出窗口阻止图标，点击它并选择"始终允许弹出窗口"。</p>
+                        <button onclick="this.parentElement.remove()" style="background-color: #721c24; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">关闭</button>
+                    </div>
+                `;
+      document.body.appendChild(message);
+    }
+  });
+</script>
+</body>
+</html>
